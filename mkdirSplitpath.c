@@ -7,7 +7,7 @@ extern struct NODE* cwd;
 void mkdir(char pathName[]){
 
     if(strlen(pathName) == 0){
-	printf("MKDIR ERROR: no path provided");
+	printf("MKDIR ERROR: no path provided\n");
 	return;
     }
     // used later
@@ -24,6 +24,12 @@ void mkdir(char pathName[]){
     char dirName[100] = {'\0'};
     struct NODE* current = splitPath(pathName, baseName, dirName);
 
+    if(current == NULL){
+	// no path. delete.
+        free(newdir);
+	return;
+    }
+    
     strcpy(newdir->name, baseName);
     newdir->parentPtr = current;
 
@@ -38,18 +44,19 @@ void mkdir(char pathName[]){
     if(newdir->parentPtr->childPtr == NULL){newdir->parentPtr->childPtr = newdir;}
     else{
         struct NODE* cfile = newdir->parentPtr->childPtr;
-        while(cfile->siblingPtr != NULL){
-	    if(strcmp(cfile->name, newdir->name)){
-		printf("MKDIR ERROR: directory %s already exists", pathName);
+        while(cfile != NULL){
+	    if(!strcmp(cfile->name, newdir->name)){
+		printf("MKDIR ERROR: directory %s already exists\n", pathName);
 		free(newdir);
 		return;
 	    }
+	    if(cfile->siblingPtr == NULL){break;}
             cfile = cfile->siblingPtr;
         }
         cfile->siblingPtr = newdir;
     }
 
-    printf("MKDIR SUCCESS: node %s successfully created", pathName);
+    printf("MKDIR SUCCESS: node %s successfully created\n", pathName);
     return;
 }
 
@@ -93,7 +100,7 @@ struct NODE* splitPath(char* pathName, char* baseName, char* dirName){
         current = current->siblingPtr;
     }
     if(current == NULL || current->fileType != 'D'){
-        printf("ERROR: directory %s does not exist", snippet);
+        printf("ERROR: directory %s does not exist\n", snippet);
 	return NULL;
     }
 
@@ -114,7 +121,7 @@ struct NODE* splitPath(char* pathName, char* baseName, char* dirName){
             current = current->siblingPtr;
         }
         if(current == NULL || current->fileType != 'D'){
-            printf("ERROR: directory %s does not exist", snippet);
+            printf("ERROR: directory %s does not exist\n", snippet);
 	    return NULL;
         }
         strcat(dirName, forwardslash);
