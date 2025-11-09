@@ -15,3 +15,9 @@ main: main.c $(OBJ)
 
 clean:
 	rm -f mkdirSplitpath.o main
+
+build:
+	rm -f mkdirSplitpath.o main j.txt
+	gcc -c mkdirSplitpath.c
+	gcc -o main main.o mkdirSplitpath.o otherCommands.o
+	touch j.txt
