@@ -6,7 +6,7 @@ extern struct NODE* cwd;
 //make directory
 void mkdir(char pathName[]){
 
-    if(strlen(pathName) == 0){
+    if(pathName == NULL || pathName[0] == '\0'){
 	printf("MKDIR ERROR: no path provided\n");
 	return;
     }
@@ -93,6 +93,12 @@ struct NODE* splitPath(char* pathName, char* baseName, char* dirName){
 
     // insure that our path is valid
     char* snippet = strtok(pathNameCopy, "/");
+    
+    if(snippet == NULL){
+	printf("MKDIR ERROR: no path provided\n");
+	free(pathNameCopy);
+	return NULL;
+    }    
     strcat(dirName, snippet);
 
     current = current->childPtr;
